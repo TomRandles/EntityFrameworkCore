@@ -51,11 +51,16 @@ namespace SamuraiApp.UI
             GetSamuraiWithHorse();
             GetHorsesWithSamurai();
             QuerySamuraiBattleStats();
+            QueryUsingRawSql();
+            QueryRelatedUsingRawSql();
+            QueryUsingRawSQLWithInterpolation();
+            DangerQueryUsingRawSQLWithInterpolation();
+            QueryUsingFromSQLRawWithStoredProcedure();
+            ExecuteSomeRawSQL();
 
             Console.Write("Press any key");
             Console.ReadKey();
         }
-        
         private static void AddSamurai(params string[] names)
         {
             foreach (var name in names)
@@ -65,7 +70,6 @@ namespace SamuraiApp.UI
             }
             _context.SaveChanges();
         }
-
         private static void AddVariousTypes()
         {
             // Batch operations example - different types
@@ -114,13 +118,11 @@ namespace SamuraiApp.UI
                 _context.SaveChanges();
             }
         }
-
         private static void QueryAggregates()
         {
             var name = "Jane";
             var samurai = _context.Samurais.FirstOrDefault(s => s.Name == name);
         }
-
         private static void GetSamurai()
         {
             var samurais = _context
@@ -215,7 +217,6 @@ namespace SamuraiApp.UI
                 }
             }
         }
-
         public static void Simpler_AddQuoteToExistingSamuraiNoTracking(int samuraiId)
         {
             var samurai = _context.Samurais.Find(samuraiId);
@@ -234,7 +235,6 @@ namespace SamuraiApp.UI
                 }
             }
         }
-
         public static void EagerLoadSamuraiWithQuotes()
         {
             // Include - include related objects in query
@@ -246,7 +246,6 @@ namespace SamuraiApp.UI
             // Include filtering
             var thankfulSamurais = _context.Samurais.Include(s => s.Quotes.Where(q => q.Text.Contains("Thanks"))).ToList();
         }
-
         public static void ProjectSomeProperties()
         {
             // Return two properties into new type. Use anonymouse type in lambda expression - new {}
@@ -254,7 +253,6 @@ namespace SamuraiApp.UI
             // Returns here a list of anonymous types; each type containing two properties
             var someProperties = _context.Samurais.Select(s => new { s.Id, s.Name }).ToList();
         }
-
         public static void ProjectSomePropertiesWithQuotes()
         {
             // Include child quotes in projection
@@ -315,7 +313,6 @@ namespace SamuraiApp.UI
             var samurais = _context.Samurais.Where(s => s.Quotes.Any(q => q.Text.Contains("Happy")))
                                             .ToList();   
         }
-
         private static void ModifyingRelatedDataWhileTracking()
         {
             var samurai = _context.Samurais.Include(s => s.Quotes).FirstOrDefault(s => s.Id == 2);
@@ -326,7 +323,6 @@ namespace SamuraiApp.UI
                 _context.SaveChanges();
             }
         }
-
         private static void ModifyingRelatedDataNoTracking()
         {
             var samurai = _context.Samurais.Include(s => s.Quotes).FirstOrDefault(s => s.Id == 2);
@@ -513,11 +509,54 @@ namespace SamuraiApp.UI
             // Get horse samurai pairs - new anonymous object 
             var horseSamuraiPairs = _context.Samurais.Where(s => s.Horse != null).Select(s => new { Samurai = s, Horse = s.Horse }).ToList();
         }
-
         private static void QuerySamuraiBattleStats()
         {
             // Queries new db SamuraiBattleStats view
             var battleStats = _context.SamuraiBattleStats.ToList();
+        }
+        private static void QueryUsingRawSql()
+        {
+            var samurais = _context.Samurais.FromSqlRaw("Select * from samurais").ToList();
+        }
+        private static void QueryRelatedUsingRawSql()
+        {
+            var samurais = _context.Samurais
+                                   .FromSqlRaw("Select Id, Name from samurais")
+                                   .Include(q => q.Quotes)
+                                   .ToList();
+        }
+        private static void QueryUsingRawSQLWithInterpolation()
+        {
+            string name = "Harry";
+            var samurais = _context.Samurais.FromSqlRaw($"Select * from Samurais where name = {name}").ToList();
+        }
+
+        private static void DangerQueryUsingRawSQLWithInterpolation()
+        {
+            // Do not use single quotes with parameter. Suseptable to SQL injection attack.
+            string name = "Harry";
+            var samurais = _context.Samurais.FromSqlRaw($"Select * from Samurais where name = '{name}'").ToList();
+        }
+
+        private static void QueryUsingFromSQLRawWithStoredProcedure()
+        {
+            var text = "Happy";
+            var samurais = _context.Samurais.FromSqlRaw("EXEC dbo.SamuraisWhoSaidAWord {0}", text).ToList();
+
+            samurais = _context.Samurais
+                               .FromSqlInterpolated($"EXEC dbo.SamuraisWhoSaidAWord {text}")
+                               .ToList();
+        }
+        private static void ExecuteSomeRawSQL()
+        {
+            // Find a samurai with quotes
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Quotes != null);
+            if (samurai != null)
+            {
+                // Must use parameters! 
+                var affected = _context.Database
+                                       .ExecuteSqlRaw("EXEC dbo.DeleteQuotesForSamurai {0}", samurai.Id);
+            }
         }
     }
 }
