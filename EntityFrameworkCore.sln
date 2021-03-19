@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamuraiApp.Data", "SamuraiA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamuraiApp.UI", "SamuraiApp.UI\SamuraiApp.UI.csproj", "{A3562AF8-7A96-4399-8D79-5A02FC42AAC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamuraiApp.Test", "SamuraiApp.Test\SamuraiApp.Test.csproj", "{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{A3562AF8-7A96-4399-8D79-5A02FC42AAC8}.Release|x64.Build.0 = Release|Any CPU
 		{A3562AF8-7A96-4399-8D79-5A02FC42AAC8}.Release|x86.ActiveCfg = Release|Any CPU
 		{A3562AF8-7A96-4399-8D79-5A02FC42AAC8}.Release|x86.Build.0 = Release|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Debug|x86.Build.0 = Debug|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Release|x64.Build.0 = Release|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Release|x86.ActiveCfg = Release|Any CPU
+		{6EC9BDBE-6CEA-4EB9-B356-8D985F1D757E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

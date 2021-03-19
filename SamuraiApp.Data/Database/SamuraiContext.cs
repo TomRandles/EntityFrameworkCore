@@ -1,12 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using SamuraiApp.Domain;
-using System;
 
 namespace SamuraiApp.Data.Database
 {
     public class SamuraiContext : DbContext
     {
+        // Default - already in use. Needed to be added back in
+        public SamuraiContext()
+        {}
+
+        // Tests require ctor that takes db options 
+        public SamuraiContext(DbContextOptions options) : base(options)
+        { }
+
         public DbSet<Samurai> Samurais { get; set; }
         public DbSet<Quote>  Quotes { get; set; }
         public DbSet<Battle> Battles { get; set; }
@@ -18,13 +24,21 @@ namespace SamuraiApp.Data.Database
             // Include Db logging - write to WriteLine delegate
             // Override default max batch size
             // Enable sensitive data logging
-            builder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=SamuraiAppData",
-                options => options.MaxBatchSize(100))                           
-                   .LogTo(Console.WriteLine, 
-                          new[] { DbLoggerCategory.Database.Command.Name,
-                                  DbLoggerCategory.Database.Transaction.Name},
-                          LogLevel.Debug)
-                   .EnableSensitiveDataLogging();                        
+            // Test database for testing purposes
+            // Flexible option - use SQL server if required.
+            if (!builder.IsConfigured)
+            {
+                // Already configured via constructor?
+                builder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=SamuraiAppData");
+            }
+
+            //builder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=SamuraiAppData",
+            //    options => options.MaxBatchSize(100))                           
+            //       .LogTo(Console.WriteLine, 
+            //              new[] { DbLoggerCategory.Database.Command.Name,
+            //                      DbLoggerCategory.Database.Transaction.Name},
+            //              LogLevel.Debug)
+            //       .EnableSensitiveDataLogging();                        
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
